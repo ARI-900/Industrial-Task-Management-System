@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { setToLocalStorage, getFromLocalStorage, setToLocalStorageByKey } from '../utility/localStorage';
+import toast from 'react-hot-toast';
 
 
 
@@ -22,16 +23,22 @@ export const AppProvider = ({ children }) => {
 
   // Save to localStorage whenever there's a change
   useEffect(() => {
-    setToLocalStorage('employees', employees);
+    if (employees.length > 0) {
+      setToLocalStorageByKey('employees', employees);
+    }
   }, [employees]);
-
+  
   useEffect(() => {
-    setToLocalStorage('admin', admin);
+    if (admin.length > 0) {
+      setToLocalStorageByKey('admin', admin);
+    }
   }, [admin]);
-
+  
   useEffect(() => {
-    if (localStorage.getItem('user')) setUser(JSON.parse(localStorage.getItem('user')));
-  }, []);
+    if (user) {
+      setToLocalStorageByKey('user', user);
+    }
+  }, [user]);
 
 
 
@@ -56,6 +63,8 @@ export const AppProvider = ({ children }) => {
     return false;
   };
 
+
+
   // auth function: logout ------------------------------------------->>>>>>>>>>>>>>>>>>>>>
   const logout = () => {
 
@@ -67,9 +76,70 @@ export const AppProvider = ({ children }) => {
 
 
   // task provider function -------------------------------------------->>>>>>>>>>>>>>>>>
-
-
-
+  const createTask = (taskForm) => {
+    const { title, description, assignDate, deadlineDate, category, priority, assignedTo } = taskForm;
+  
+    if (!title || !description || !assignDate || !deadlineDate || !category || !priority || !assignedTo) {
+      toast.error('Please fill all the fields');
+      return false;
+    }
+  
+    const newTask = {
+      title,
+      description,
+      taskDate: assignDate,
+      deadline: deadlineDate,
+      category,
+      active: false,
+      newTask: true,
+      failed: false,
+      completed: false,
+      adminId: user?.id, // Assuming the logged-in user is an admin
+      priority,
+    };
+  
+    let empId;
+  
+    // Update employees
+    const updatedEmployees = employees.map(emp => {
+      if (emp.email === assignedTo) {
+        empId = emp.id;
+        const existing = Array.isArray(emp.tasks) ? emp.tasks : [];
+        return {
+          ...emp,
+          tasks: [...existing, newTask],
+        };
+      }
+      return emp;
+    });
+  
+    // Check if any employee was updated
+    const isEmployeeUpdated = updatedEmployees.some(emp => emp.tasks.some(task => task.newTask));
+    if (!isEmployeeUpdated) {
+      toast.error("No employee found with the provided email.");
+      return false;
+    }
+  
+    setEmployee(updatedEmployees);
+    setToLocalStorageByKey('employees', updatedEmployees); // Persist employees to localStorage
+  
+    // Update admin
+    const updatedAdmin = admin.map(adm => {
+      if (adm.id === user?.id && !adm.assignedEmployeeIds.includes(empId)) {
+        return {
+          ...adm,
+          assignedEmployeeIds: [...adm.assignedEmployeeIds, empId],
+        };
+      }
+      return adm;
+    });
+  
+    setAdmin(updatedAdmin);
+    setToLocalStorageByKey('admin', updatedAdmin); // Persist admin to localStorage
+  
+    toast.success("Task created successfully!");
+    return true;
+  };
 
 
 
@@ -84,6 +154,7 @@ export const AppProvider = ({ children }) => {
     setUser,
     login,
     logout,
+    createTask,
   };
 
   return (

@@ -1,4 +1,7 @@
 import React from 'react';
+import { useAppContext } from '../../../context/AppContext';
+import toast from 'react-hot-toast';
+
 
 export const CreateTask = () => {
   const [title, setTitle] = React.useState('');
@@ -9,11 +12,13 @@ export const CreateTask = () => {
   const [priority, setPriority] = React.useState('');
   const [assignedTo, setAssignedTo] = React.useState('');
 
+  const {createTask} = useAppContext();
+
   function submitHandler(e) {
     e.preventDefault();
-
+  
     // Log the task details
-    console.log({
+    const newTask = {
       title,
       description,
       assignDate,
@@ -21,17 +26,26 @@ export const CreateTask = () => {
       category,
       priority,
       assignedTo,
-    });
-
-    // Clear the form after submission
-    setTitle('');
-    setDescription('');
-    setAssignDate('');
-    setDeadlineDate('');
-    setCategory('');
-    setPriority('');
-    setAssignedTo('');
+    };
+  
+    const res = createTask(newTask);
+  
+    if (res) {
+      toast.success('Task created successfully!');
+      // Clear the form after successful submission
+      setTitle('');
+      setDescription('');
+      setAssignDate('');
+      setDeadlineDate('');
+      setCategory('');
+      setPriority('');
+      setAssignedTo('');
+    } else {
+      toast.error('Failed to create task. Please check the details.');
+    }
   }
+
+  
 
   return (
     <>

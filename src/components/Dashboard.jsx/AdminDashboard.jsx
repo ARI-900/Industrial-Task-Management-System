@@ -44,7 +44,7 @@ const CreateEmployeeModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
           <div>
             <label className="block mb-1 font-medium">Email</label>
-            <input type="email" name="email" required className="w-full border rounded-lg px-3 py-2" placeholder="abc@gmail.com" />
+            <input type="email" name="email" autoComplete='email' required className="w-full border rounded-lg px-3 py-2" placeholder="abc@gmail.com" />
           </div>
           <div>
             <label className="block mb-1 font-medium">Designation</label>

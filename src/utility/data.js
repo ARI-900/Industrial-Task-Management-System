@@ -1,8 +1,8 @@
 export const employees = [
   {
     id: 1,
-    name: "Alice Johnson",
-    email: "alice.johnson@gmail.com",
+    name: "Ananya Sharma",
+    email: "ananya.sharma@gmail.com",
     password: "123",
     role: "employee",
     tasks: [
@@ -49,8 +49,8 @@ export const employees = [
   },
   {
     id: 2,
-    name: "Bob Smith",
-    email: "bob.smith@gmail.com",
+    name: "Rahul Verma",
+    email: "rahul.verma@gmail.com",
     password: "123",
     role: "employee",
     tasks: [
@@ -110,8 +110,8 @@ export const employees = [
   },
   {
     id: 3,
-    name: "Charlie Brown",
-    email: "charlie.brown@gmail.com",
+    name: "Amitabh Desai",
+    email: "amitabh.desai@gmail.com",
     password: "123",
     role: "employee",
     tasks: [
@@ -158,8 +158,8 @@ export const employees = [
   },
   {
     id: 4,
-    name: "Diana Prince",
-    email: "diana.prince@gmail.com",
+    name: "Priya Raj Chowdhury",
+    email: "priya.chowdhury@gmail.com",
     password: "123",
     role: "employee",
     tasks: [
@@ -232,8 +232,8 @@ export const employees = [
   },
   {
     id: 5,
-    name: "Ethan Hunt",
-    email: "ethan.hunt@gmail.com",
+    name: "Karan Mehta",
+    email: "karan.mehta@gmail.com",
     password: "123",
     role: "employee",
     tasks: [
@@ -297,7 +297,7 @@ export const employees = [
         deadline: "2025-04-10",
         active: false,
         newTask: false,
-        failed: true,
+        failed: false,
         completed: false,
         adminId: 1,
         priority: "High"
@@ -314,6 +314,28 @@ export const employees = [
         completed: true,
         adminId: 2,
         priority: "Low"
+      }
+    ]
+  },
+  {
+    id: 6,
+    name: "Goutam Mondal",
+    email: "goutam@gmail.com",
+    password: "123",
+    role: "employee",
+    tasks: [
+      {
+        title: "Risk assessment",
+        description: "Evaluate security vulnerabilities.",
+        category: "Security",
+        taskDate: "2025-04-12",
+        deadline: "2025-04-18",
+        active: true,
+        newTask: true,
+        failed: false,
+        completed: false,
+        adminId: 2,
+        priority: "High"
       }
     ]
   }
@@ -334,6 +356,6 @@ export const admin = [
     email: "admin2@gmail.com",
     password: "123",
     role: "admin",
-    assignedEmployeeIds: [3, 4, 5]
+    assignedEmployeeIds: [3, 4, 5, 6]
   }
 ];

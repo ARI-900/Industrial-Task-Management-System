@@ -26,7 +26,6 @@ export function getFromLocalStorage(key) {
       console.log(`Error occurred during get from local storage for key: ${key}`);
       console.warn(error.message);
       return []; // Return an empty array on error
-
     }
   }
 
