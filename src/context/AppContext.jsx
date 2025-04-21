@@ -139,7 +139,125 @@ export const AppProvider = ({ children }) => {
   
     toast.success("Task created successfully!");
     return true;
-  };
+  }
+
+
+
+
+
+  // Create New Employee Function -------------------------->>>>>>>>>>>>>>>
+  const createEmployee = (formdata) => {
+
+    try {
+      const { name, email, role, password, confirmPassword } = formdata;
+
+      if (!name || !email || !role || !password || !confirmPassword) {
+        toast.error('Please fill all the fields');
+      }
+
+      // console.log(name, email, role, password === confirmPassword);
+
+      if(password !== confirmPassword) {
+        toast.error('Passwords do not match!');
+      }
+
+
+      const newEmployee = {
+        id: Date.now().toString(36).concat(Math.random().toString(36).slice(2)),
+        name,
+        email,
+        role,
+        password,
+        tasks: [],
+      };
+
+      setEmployee((prev) => [...prev, newEmployee]);
+
+      return true;
+
+
+    }
+    catch(error) {
+
+      console.log("Error creating employee:");
+      console.warn(error.message);
+
+      return false;
+    }
+  }
+
+
+
+  // Delete Employee Function -------------------------->>>>>>>>>>>>>>>
+  const deleteEmployee = (empId) => {
+    
+    try {
+      
+      if(!empId) {
+        toast.error('Employee ID is required');
+        return false;
+      }
+
+      const updatedEmployees = employees.filter((emp) => emp.id !== empId);
+
+      if(updatedEmployees.length === employees.length) {
+        toast.error('Employee not found!');
+        return false;
+      }
+
+      // otherwise employeee found
+      setEmployee(updatedEmployees);
+      toast.success('Employee deleted successfully!');
+      return true;
+    }
+    catch (error) {
+      console.log("Error in AppProvider:");
+      console.warn(error.message);
+      
+    }
+  }
+
+
+  function editEmployee(empId, editform) {
+
+    try {
+      
+      if(!empId) {
+        toast.error('Employee ID is required');
+        return false;
+      }
+
+      const { name, email, role, password} = editform;
+
+      if (!name || !email || !role || !password) {
+        toast.error('Please fill all the fields');
+        return false;
+      }
+
+     const updatedEmployees = employees.map((emp) => (
+       emp.id === empId ? 
+       {
+         ...emp,
+         name: name,
+         email: email,
+         role: role,
+         password: password,
+         tasks: emp.tasks || [], 
+       }
+       :
+       emp
+     ))
+      setEmployee(updatedEmployees);
+      return true;
+    } 
+    catch (error) {
+      console.log("Error in AppProvider:");
+      console.warn(error.message);  
+      toast.error('Error Occures, Try Again Later!');
+    }
+  }
+
+
 
 
 
@@ -155,6 +273,9 @@ export const AppProvider = ({ children }) => {
     login,
     logout,
     createTask,
+    createEmployee,
+    deleteEmployee,
+    editEmployee,
   };
 
   return (

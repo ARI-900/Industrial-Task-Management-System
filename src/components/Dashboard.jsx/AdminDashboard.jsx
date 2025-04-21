@@ -5,6 +5,7 @@ import { CreateTask } from './Other/AminCreateTask';
 import AdminAllTask from './Other/AdminAllTask';
 import { useAppContext } from '../../context/AppContext';
 import ShowAllUsers from './Other/ShowAllUsers';
+import toast from 'react-hot-toast';
 
 
 
@@ -13,7 +14,7 @@ const CreateEmployeeModal = ({ isOpen, onClose, onSubmit }) => {
 
   const { employees } = useAppContext();
 
-  
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'auto';
@@ -79,7 +80,7 @@ const CreateEmployeeModal = ({ isOpen, onClose, onSubmit }) => {
 
         {/* show user table */}
         <div >
-          <ShowAllUsers users = {employees} />
+          <ShowAllUsers users={employees}  />
         </div>
       </div>
     </div>
@@ -95,7 +96,10 @@ const AdminDashboard = () => {
 
   const { employees, user } = useAppContext();
   const [adminAssignedTasks, setAdminAssignedTasks] = useState([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false); // Modal Hook to Maintain state
+  const { createEmployee } = useAppContext();
+
+
 
   useEffect(() => {
     if (user && user.role === 'admin') {
@@ -122,7 +126,10 @@ const AdminDashboard = () => {
     setModalOpen(false);
   };
 
+
+  // Create New Employee Function -------------------------->>>>>>>>>>>>>>>
   const handleCreateEmployee = (e) => {
+
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -136,14 +143,25 @@ const AdminDashboard = () => {
       confirmPassword: formData.get('confirmPassword'),
       tasks: [],
     };
-    // TODO: Call API or context action to add employee
-    console.log('Creating employee:', newEmployee);
 
-    //  after form submission, clear form datas
-    e.target.reset();
 
-    handleCloseModal();
+    const response = createEmployee(newEmployee);
+    if (response == false) { // if false
+      toast.error("Error During Creating Employee!");
+      return;
+    }
+    else {
+      toast.success("Employee created successfully!");
+      //  after form submission, clear form datas
+      e.target.reset();
+      handleCloseModal();
+    }
+
   };
+
+  
+
+
 
   return (
     <div className="bg-gradient-to-r from-gray-100 to-gray-300 min-h-screen">
@@ -172,8 +190,13 @@ const AdminDashboard = () => {
           <CreateTask />
         </div>
 
+
+
         {/* Show all tasks assigned by admin */}
         <AdminAllTask tasks={adminAssignedTasks} />
+
+
+
 
         {/* Create Employee Modal */}
         <CreateEmployeeModal
